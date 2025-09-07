@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán giá nhà California</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Dự đoán giá nhà California</h1>
+        <p>Nhập các thông số để dự đoán giá trị nhà trung bình của khu dân cư (đơn vị: $100.000).</p>
+
+        <div class="input-group">
+            <label for="MedInc">Thu nhập trung bình (MedInc):</label>
+            <input type="number" id="MedInc" step="any" value="8.3252">
+        </div>
+        <div class="input-group">
+            <label for="HouseAge">Tuổi nhà trung bình (HouseAge):</label>
+            <input type="number" id="HouseAge" step="any" value="41.0">
+        </div>
+        <div class="input-group">
+            <label for="AveRooms">Số phòng trung bình (AveRooms):</label>
+            <input type="number" id="AveRooms" step="any" value="6.98412698">
+        </div>
+        <div class="input-group">
+            <label for="AveBedrms">Số phòng ngủ trung bình (AveBedrms):</label>
+            <input type="number" id="AveBedrms" step="any" value="1.02380952">
+        </div>
+        <div class="input-group">
+            <label for="Population">Dân số (Population):</label>
+            <input type="number" id="Population" step="any" value="322.0">
+        </div>
+        <div class="input-group">
+            <label for="AveOccup">Số người/hộ trung bình (AveOccup):</label>
+            <input type="number" id="AveOccup" step="any" value="2.55555556">
+        </div>
+        <div class="input-group">
+            <label for="Latitude">Vĩ độ (Latitude):</label>
+            <input type="number" id="Latitude" step="any" value="37.88">
+        </div>
+        <div class="input-group">
+            <label for="Longitude">Kinh độ (Longitude):</label>
+            <input type="number" id="Longitude" step="any" value="-122.23">
+        </div>
+
+        <button id="predictBtn">Dự đoán giá nhà</button>
+
+        <div class="result-box">
+            <h2>Kết quả dự đoán:</h2>
+            <p id="predictionResult">Nhập các giá trị và nhấn "Dự đoán".</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
