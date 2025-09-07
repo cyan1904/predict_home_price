@@ -1,76 +1,97 @@
-// đặt lên đầu file
-const BACKEND = 'https://5000-m-s-1syy9hgqncbz-c.us-central1-0.prod.colab.dev'; // <-- thay bằng URL mới nhất từ Colab
-const API = BACKEND.replace(/\/+$/, '');  // cắt dấu / ở cuối nếu có
+/* script.js v13 - FE gọi backend Hugging Face Spaces (FastAPI)
+ * LƯU Ý: ĐỔI API thành URL Space của bạn!
+ */
+const API = 'https://cyan1904-house-predict.hf.space'; // <-- thay bằng URL của bạn
+console.log('script v13 loaded; API =', API);
 
-// trước khi fetch để tự check
-console.log('POST to:', `${API}/predict`);
+// ---- tiện ích ----
+const $ = (id) => document.getElementById(id);
 
-console.log('script v6 loaded');
-document.getElementById('predictBtn').addEventListener('click', async () => {
-    const MedInc = parseFloat(document.getElementById('MedInc').value);
-    const HouseAge = parseFloat(document.getElementById('HouseAge').value);
-    const AveRooms = parseFloat(document.getElementById('AveRooms').value);
-    const AveBedrms = parseFloat(document.getElementById('AveBedrms').value);
-    const Population = parseFloat(document.getElementById('Population').value);
-    const AveOccup = parseFloat(document.getElementById('AveOccup').value);
-    const Latitude = parseFloat(document.getElementById('Latitude').value);
-    const Longitude = parseFloat(document.getElementById('Longitude').value);
+function getFloat(id) {
+  const v = parseFloat($(id).value);
+  return Number.isFinite(v) ? v : NaN;
+}
 
-    const predictionResult = document.getElementById('predictionResult');
+function setResult(text, color = '#333') {
+  const el = $('predictionResult');
+  el.textContent = text;
+  el.style.color = color;
+}
 
-    // Kiểm tra xem tất cả các trường đã được điền số hợp lệ chưa
-    if (isNaN(MedInc) || isNaN(HouseAge) || isNaN(AveRooms) || isNaN(AveBedrms) || 
-        isNaN(Population) || isNaN(AveOccup) || isNaN(Latitude) || isNaN(Longitude)) {
-        predictionResult.textContent = 'Vui lòng nhập tất cả các giá trị số hợp lệ!';
-        predictionResult.style.color = '#dc3545'; // Màu đỏ cho lỗi
-        return;
+function withTimeout(ms) {
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), ms);
+  return { signal: controller.signal, cancel: () => clearTimeout(t) };
+}
+
+// ---- handler ----
+$('predictBtn').addEventListener('click', async () => {
+  const MedInc     = getFloat('MedInc');
+  const HouseAge   = getFloat('HouseAge');
+  const AveRooms   = getFloat('AveRooms');
+  const AveBedrms  = getFloat('AveBedrms');
+  const Population = getFloat('Population');
+  const AveOccup   = getFloat('AveOccup');
+  const Latitude   = getFloat('Latitude');
+  const Longitude  = getFloat('Longitude');
+
+  // kiểm tra hợp lệ
+  if ([MedInc, HouseAge, AveRooms, AveBedrms, Population, AveOccup, Latitude, Longitude]
+      .some(Number.isNaN)) {
+    setResult('Vui lòng nhập tất cả các giá trị số hợp lệ!', '#dc3545');
+    return;
+  }
+
+  // trạng thái loading
+  const btn = $('predictBtn');
+  btn.disabled = true;
+  btn.textContent = 'Đang dự đoán...';
+  setResult('Đang dự đoán...', '#007bff');
+
+  // gọi API (JSON) — Spaces hỗ trợ CORS chuẩn
+  const payload = { MedInc, HouseAge, AveRooms, AveBedrms, Population, AveOccup, Latitude, Longitude };
+  const { signal, cancel } = withTimeout(15000); // timeout 15s
+
+  try {
+    const resp = await fetch(`${API.replace(/\/+$/,'')}/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal
+    });
+
+    if (!resp.ok) {
+      // cố gắng đọc lỗi JSON từ server nếu có
+      let errText = `HTTP ${resp.status}`;
+      try {
+        const j = await resp.json();
+        if (j && j.error) errText += ` - ${j.error}`;
+      } catch (_) {}
+      throw new Error(errText);
     }
 
-    predictionResult.textContent = 'Đang dự đoán...';
-    predictionResult.style.color = '#007bff'; // Màu xanh dương khi đang tải
-
-    try {
-        // Địa chỉ API Back-end của bạn.
-        // Khi chạy trên máy local, nó sẽ là http://localhost:5000/predict
-        // Khi triển khai lên server, bạn sẽ thay thế bằng URL thực tế của API Back-end.
-        const response = await fetch('https://5000-m-s-1syy9hgqncbz-c.us-central1-0.prod.colab.dev/predict', { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
-            body: JSON.stringify({
-                MedInc: MedInc,
-                HouseAge: HouseAge,
-                AveRooms: AveRooms,
-                AveBedrms: AveBedrms,
-                Population: Population,
-                AveOccup: AveOccup,
-                Latitude: Latitude,
-                Longitude: Longitude
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        // Giả sử Back-end trả về kết quả dự đoán trong trường 'prediction'
-        // Giá trị dự đoán sẽ là đơn vị $100.000, nên nhân với 100000 để có giá thực
-        const predictedValue = (data.prediction * 100000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-        
-        predictionResult.textContent = `Giá nhà dự đoán: ${predictedValue}`;
-        predictionResult.style.color = '#28a745'; // Màu xanh lá cây cho kết quả thành công
-
-    } catch (error) {
-        console.error('Lỗi khi gọi API dự đoán:', error);
-        predictionResult.textContent = 'Có lỗi xảy ra khi dự đoán giá nhà. Vui lòng thử lại.';
-        predictionResult.style.color = '#dc3545'; // Màu đỏ cho lỗi
+    const data = await resp.json();
+    if (data && data.ok === false) {
+      throw new Error(data.error || 'Server trả về lỗi.');
     }
+    if (!data || typeof data.prediction !== 'number') {
+      throw new Error('Phản hồi không có trường prediction.');
+    }
+
+    // Giá trị dự đoán là đơn vị $100.000 (như mô hình California)
+    const vnd = (data.prediction * 100000)
+      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+
+    setResult(`Giá nhà dự đoán: ${vnd}`, '#28a745');
+  } catch (err) {
+    console.error('Lỗi khi gọi API dự đoán:', err);
+    const msg = err.name === 'AbortError'
+      ? 'Hết thời gian chờ (timeout). Vui lòng thử lại.'
+      : `Có lỗi xảy ra khi dự đoán: ${err.message}`;
+    setResult(msg, '#dc3545');
+  } finally {
+    cancel();
+    btn.disabled = false;
+    btn.textContent = 'Dự đoán giá nhà';
+  }
 });
-
-
-
-
-
-
