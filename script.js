@@ -1,3 +1,4 @@
+console.log('script v5 loaded');
 document.getElementById('predictBtn').addEventListener('click', async () => {
     const MedInc = parseFloat(document.getElementById('MedInc').value);
     const HouseAge = parseFloat(document.getElementById('HouseAge').value);
@@ -60,6 +61,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
         predictionResult.style.color = '#dc3545'; // Màu đỏ cho lỗi
     }
 });
+
 
 
 
