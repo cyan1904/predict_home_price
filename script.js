@@ -11,7 +11,7 @@ document.getElementById('sendBtn').addEventListener('click', async () => {
 
     try {
         // Thay thế 'http://localhost:5000/predict' bằng URL API Back-end thực tế
-        const response = await fetch('http://localhost:5000/predict', {
+        const response = await fetch('https://5000-m-s-1syy9hgqncbz-c.us-central1-0.prod.colab.dev/predict', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,4 +25,5 @@ document.getElementById('sendBtn').addEventListener('click', async () => {
         console.error('Lỗi khi gọi API:', error);
         resultDiv.textContent = 'Có lỗi xảy ra khi kết nối với AI.';
     }
+
 });
