@@ -28,7 +28,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
         const response = await fetch('https://5000-m-s-1syy9hgqncbz-c.us-central1-0.prod.colab.dev/predict', { 
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'text/plain'
             },
             body: JSON.stringify({
                 MedInc: MedInc,
