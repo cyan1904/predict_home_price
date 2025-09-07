@@ -25,7 +25,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
         // Địa chỉ API Back-end của bạn.
         // Khi chạy trên máy local, nó sẽ là http://localhost:5000/predict
         // Khi triển khai lên server, bạn sẽ thay thế bằng URL thực tế của API Back-end.
-        const response = await fetch('http://localhost:5000/predict', { 
+        const response = await fetch('https://5000-m-s-1syy9hgqncbz-c.us-central1-0.prod.colab.dev/predict', { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -60,3 +60,4 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
         predictionResult.style.color = '#dc3545'; // Màu đỏ cho lỗi
     }
 });
+
