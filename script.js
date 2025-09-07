@@ -1,3 +1,10 @@
+// đặt lên đầu file
+const BACKEND = 'https://5000-m-s-1syy9hgqncbz-c.us-central1-0.prod.colab.dev'; // <-- thay bằng URL mới nhất từ Colab
+const API = BACKEND.replace(/\/+$/, '');  // cắt dấu / ở cuối nếu có
+
+// trước khi fetch để tự check
+console.log('POST to:', `${API}/predict`);
+
 console.log('script v5 loaded');
 document.getElementById('predictBtn').addEventListener('click', async () => {
     const MedInc = parseFloat(document.getElementById('MedInc').value);
@@ -61,6 +68,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
         predictionResult.style.color = '#dc3545'; // Màu đỏ cho lỗi
     }
 });
+
 
 
 
