@@ -5,7 +5,7 @@ const API = BACKEND.replace(/\/+$/, '');  // cắt dấu / ở cuối nếu có
 // trước khi fetch để tự check
 console.log('POST to:', `${API}/predict`);
 
-console.log('script v5 loaded');
+console.log('script v6 loaded');
 document.getElementById('predictBtn').addEventListener('click', async () => {
     const MedInc = parseFloat(document.getElementById('MedInc').value);
     const HouseAge = parseFloat(document.getElementById('HouseAge').value);
@@ -68,6 +68,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
         predictionResult.style.color = '#dc3545'; // Màu đỏ cho lỗi
     }
 });
+
 
 
 
